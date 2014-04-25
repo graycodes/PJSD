@@ -19,7 +19,7 @@ sub print_doc {
     return unless @file_contents;
 
     my @docs = find_docs( @file_contents );
-    print "PRINTING DOCS";
+    print "\n*** PRINTING DOCS ***\n";
     print @docs;
 }
 
@@ -35,10 +35,43 @@ sub read_file {
 
 sub find_docs {
     my @contents = @_;
+    my @docs;
+    my $doc = '';
+    my $in_doc = 0;
+    my $push = 0;
+    my $start = 0;
+    my $end = 0;
 
-#    while ($contents) {
-#        print $_;
-#    }
+    foreach (@contents) {
+        $start = _is_doc_start( $_ );
+        $end   = _is_doc_end( $_ );
+
+        if ( !$start && !$end && !$in_doc ) {
+            next;
+        }
+        
+        $in_doc = 1 if $start;
+        $in_doc = 0 if $end;
+
+        $doc .= $_;
+
+        next unless $end;
+
+        push( @docs, $doc );
+        $doc = '';
+    }
+
+    return @docs;
+}
+
+sub _is_doc_start {
+    my $line = shift;
+    return $line =~ /\/\*\*/;
+}
+
+sub _is_doc_end {
+    my $line = shift;
+    return $line =~ /\*\//;
 }
 
 1;
