@@ -13,14 +13,17 @@ sub new {
 sub print_doc {
     my $self = shift;
     return unless $self->{file_name};
-    print $self->{file_name};
 
     my @file_contents = read_file($self->{file_name});
     return unless @file_contents;
 
     my @docs = find_docs( @file_contents );
     print "\n*** PRINTING DOCS ***\n";
-    print @docs;
+
+    @docs = parse_docs( @docs );
+    foreach ( @docs ) {
+        print $_, " -------------------------------------------------- \n";
+    }
 }
 
 sub read_file {
@@ -62,6 +65,15 @@ sub find_docs {
     }
 
     return @docs;
+}
+
+sub parse_docs {
+    my @docs = @_;
+    my @output;
+
+    @output = map { (my $s = $_) =~ s/^ *(\*\/|\/\*\*|\*)//gm; $s } @docs;
+
+    return @output;
 }
 
 sub _is_doc_start {
