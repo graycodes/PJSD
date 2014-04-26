@@ -13,6 +13,9 @@ sub init {
     my $input_file;
     $input_file = <STDIN>;
     chomp( $input_file );
+    #DEBUG - TODO
+    $input_file = 'maze.js';
+    #DEBUG - TODO
     return unless $input_file;
 
     my $file = FileReader->new( file_name => $input_file );
