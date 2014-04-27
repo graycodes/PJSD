@@ -81,6 +81,9 @@ sub parse_docs {
     my @output;
 
     @output = map { (my $s = $_) =~ s/^ *(\*\/|\/\*\*|\*)//gm; $s } @docs;
+    @output = map { (my $s = $_) =~ s/^ *//gm; $s } @output;
+    @output = map { (my $s = $_) =~ s/^function (\w+)?.*/function $1/gm; $s } @output;
+    @output = map { (my $s = $_) =~ s/ = function\(.*\).*//gm; $s } @output;
 
     return @output;
 }
